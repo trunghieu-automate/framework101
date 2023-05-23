@@ -1,0 +1,10 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="UT run" verbose="1"  parallel="classes" thread-count="2">
+    <test name="demo parallel run" >
+        <classes>
+            <class name="ut.ChromeDriverRunTest"/>
+            <class name="ut.EdgeDriverRunTest"/>
+        </classes>
+    </test>
+</suite>
