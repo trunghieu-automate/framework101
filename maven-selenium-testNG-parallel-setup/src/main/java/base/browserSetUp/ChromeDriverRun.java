@@ -9,4 +9,9 @@ public class ChromeDriverRun extends BaseDriver{
         DriverManager.setDriver(new ChromeDriver(DriverOption.getChromeOption()));
         DriverManager.getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
     }
+
+    public void open(String link){
+        DriverManager.getDriver().get(link);
+    }
+
 }
