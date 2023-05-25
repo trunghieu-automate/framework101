@@ -3,7 +3,11 @@ package base.actions;
 import base.browserSetUp.DriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import java.util.List;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Actions {
@@ -23,7 +27,7 @@ public class Actions {
 
     public synchronized static void clearAllTextBox(){
         DriverManager.getDriver()
-                .findElements(By.xpath("//input[@type='text'] or //input[@type='textarea']"))
+                .findElements(By.xpath("//input[@type='text' or @type='textarea']"))
                 .forEach(WebElement::clear);
     }
 
@@ -46,15 +50,36 @@ public class Actions {
         findBy(locator).toList().get(0).click();
     }
 
-    private synchronized static List<WebElement> getAllLink(){
-        return findBy(By.xpath("//a[@href]")).toList();
+    private synchronized static Stream<WebElement> getAllLink(){
+        return findBy(By.xpath("//a[@href]"));
     }
 
-    public synchronized static void printAllHref(){
-        getAllLink().stream().map(e -> e.getAttribute("href")).map(String::strip).forEach(System.out::println);
+    private synchronized static Stream<String> getAllHref(){
+        return getAllLink()
+                .map(e -> e.getAttribute("href"))
+                .map(String::strip);
     }
 
-    public synchronized static void printAllLinkTitle(){
-        getAllLink().stream().map(WebElement::getText).map(String::strip).forEach(System.out::println);
+    private synchronized static Stream<String> getAllLinkTitle(){
+        return getAllLink()
+                .map(WebElement::getText)
+                .map(String::strip);
     }
+    public synchronized static void printAllLinkAndTitle(){
+        toMapOfTitleAndHref()
+                .forEach((s, s2) -> {
+                    System.out.println(s + " :: " + s2);
+                });
+
+    }
+    private synchronized static Stream<WebElement> getLinkThatHaveTitle(){
+        return findBy(By.xpath("//a[@title and @href]"));
+    }
+
+    private synchronized static Map<String, String> toMapOfTitleAndHref(){
+        return getLinkThatHaveTitle()
+                .collect(Collectors
+                .toMap(k-> k.getAttribute("title"), v -> v.getAttribute("href"), (k1, k2) -> k1));
+    }
+
 }
